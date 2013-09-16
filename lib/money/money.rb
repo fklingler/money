@@ -576,7 +576,7 @@ class Money
   #
   def round(rounding_mode = self.class.rounding_mode)
     if self.class.infinite_precision
-      return Money.new(fractional.round(0, rounding_mode), self.currency)
+      return Money.new((BigDecimal(self.to_s) * as_d(currency.subunit_to_unit)).round(0, rounding_mode), self.currency)
     else
       return self
     end

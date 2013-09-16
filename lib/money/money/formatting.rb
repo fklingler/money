@@ -228,21 +228,16 @@ class Money
           symbol
         end
 
-      formatted = self.abs.to_s
-
-      if rules[:rounded_infinite_precision]
-        formatted = ((BigDecimal(formatted) * currency.subunit_to_unit).round / BigDecimal(currency.subunit_to_unit.to_s)).to_s("F")
-        formatted.gsub!(/\..*/) do |decimal_part|
-          if decimal_part == '.0'
-            ''
-          else
-            decimal_part << '0' while decimal_part.length < (currency.decimal_places + 1)
-            decimal_part
-          end
+      value =
+        if rules[:rounded_infinite_precision]
+          self.round
+        else
+          self
         end
-      end
 
-      sign = self.negative? ? '-' : ''
+      formatted = value.abs.to_s
+
+      sign = value.negative? ? '-' : ''
 
       if rules[:no_cents] || (rules[:no_cents_if_whole] && cents % currency.subunit_to_unit == 0)
         formatted = "#{formatted.to_i}"
@@ -267,7 +262,7 @@ class Money
           :after
         end
 
-      if rules[:sign_positive] == true && self.positive?
+      if rules[:sign_positive] == true && value.positive?
         sign = '+'
       end
 

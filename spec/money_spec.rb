@@ -155,7 +155,7 @@ describe Money do
         m.fractional.should be_a(Fixnum)
       end
     end
-    
+
     context "loading a serialized Money via YAML" do
 
       let(:serialized) { <<YAML
@@ -271,7 +271,7 @@ YAML
       def m.amount
         5
       end
-      
+
       m.dollars.should == 5
     end
   end
@@ -558,6 +558,10 @@ YAML
       it "uses a provided rounding strategy" do
         rounded = money.round(BigDecimal::ROUND_DOWN)
         rounded.cents.should eq 15
+      end
+
+      it "works with a non power of 10 :subunit_to_unit property" do
+        Money.new(1, 'MGA').round.cents.should eq 2
       end
     end
   end
